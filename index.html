@@ -26,66 +26,7 @@
   </script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-  <style>
-    /* ==========================================
-   MEDIA QUERY: ADAPTAÇÃO PARA CELULARES E TABLETS
-   ========================================== */
-@media (max-width: 1024px) {
-    body {
-        padding: 15px 0;
-        gap: 25px;
-    }
-
-    /* Remove o tamanho fixo engessado e deixa o slide fluido */
-    .slide-container {
-        width: 95vw; /* Ocupa 95% da largura da tela do celular */
-        height: auto; /* Desbloqueia os 720px para o conteúdo não vazar para baixo */
-        min-height: calc(95vw * 9 / 16); /* Mantém uma proporção visual agradável */
-        padding: 30px 20px; /* Reduz as bordas internas pra sobrar espaço */
-    }
-
-    /* Redimensionamento proporcional da tipografia */
-    h1 { font-size: 28px; }
-    h2.slide-title { font-family: 'Montserrat', sans-serif; font-size: 20px; margin-bottom: 15px; border-left-width: 4px; padding-left: 10px; }
-    h3 { font-size: 16px; margin-bottom: 8px; }
-    p, li { font-size: 14px; }
-    .subtitle { font-size: 15px; margin-top: 10px; }
-
-    /* Quebra o layout de 2 colunas e joga uma para debaixo da outra */
-    .two-column {
-        grid-template-columns: 1fr; /* Vira uma coluna única vertical */
-        gap: 20px;
-    }
-
-    /* Reduz o tamanho dos quadros de simulação no celular */
-    .sim-placeholder {
-        height: 240px;
-        padding: 15px;
-    }
-    .sim-placeholder i { font-size: 32px; }
-
-    /* Salvação para as equações longas: se a matriz for grande, ela ganha um 
-       scroll suave para os lados em vez de quebrar ou sumir da tela */
-    .math-block {
-        font-size: 15px;
-        padding: 10px 15px;
-        overflow-x: auto; 
-        white-space: nowrap; 
-    }
-
-    /* Tabelas compactas para telas pequenas */
-    table { font-size: 12px; margin-top: 10px; }
-    th, td { padding: 8px 6px; }
-
-    /* Tira o rodapé da posição absoluta fixa no fundo (evita sobreposição) */
-    .footer {
-        position: relative;
-        bottom: auto; left: auto; right: auto;
-        margin-top: 25px;
-        padding-top: 8px;
-    }
-}
-    
+  <style>   
     /* CONFIGURAÇÕES DE RESOLUÇÃO FIXA DE SLIDE (16:9 WIDESCREEN) */
     * {
       box-sizing: border-box;
@@ -330,6 +271,65 @@
       justify-content: center;
       align-items: center;
     }
+
+    /* ==========================================
+   MEDIA QUERY: ADAPTAÇÃO PARA CELULARES E TABLETS
+   ========================================== */
+@media (max-width: 1024px) {
+    body {
+        padding: 15px 0;
+        gap: 25px;
+    }
+
+    /* Remove o tamanho fixo engessado e deixa o slide fluido */
+    .slide-container {
+        width: 95vw; /* Ocupa 95% da largura da tela do celular */
+        height: auto; /* Desbloqueia os 720px para o conteúdo não vazar para baixo */
+        min-height: calc(95vw * 9 / 16); /* Mantém uma proporção visual agradável */
+        padding: 30px 20px; /* Reduz as bordas internas pra sobrar espaço */
+    }
+
+    /* Redimensionamento proporcional da tipografia */
+    h1 { font-size: 28px; }
+    h2.slide-title { font-family: 'Montserrat', sans-serif; font-size: 20px; margin-bottom: 15px; border-left-width: 4px; padding-left: 10px; }
+    h3 { font-size: 16px; margin-bottom: 8px; }
+    p, li { font-size: 14px; }
+    .subtitle { font-size: 15px; margin-top: 10px; }
+
+    /* Quebra o layout de 2 colunas e joga uma para debaixo da outra */
+    .two-column {
+        grid-template-columns: 1fr; /* Vira uma coluna única vertical */
+        gap: 20px;
+    }
+
+    /* Reduz o tamanho dos quadros de simulação no celular */
+    .sim-placeholder {
+        height: 240px;
+        padding: 15px;
+    }
+    .sim-placeholder i { font-size: 32px; }
+
+    /* Salvação para as equações longas: se a matriz for grande, ela ganha um 
+       scroll suave para os lados em vez de quebrar ou sumir da tela */
+    .math-block {
+        font-size: 15px;
+        padding: 10px 15px;
+        overflow-x: auto; 
+        white-space: nowrap; 
+    }
+
+    /* Tabelas compactas para telas pequenas */
+    table { font-size: 12px; margin-top: 10px; }
+    th, td { padding: 8px 6px; }
+
+    /* Tira o rodapé da posição absoluta fixa no fundo (evita sobreposição) */
+    .footer {
+        position: relative;
+        bottom: auto; left: auto; right: auto;
+        margin-top: 25px;
+        padding-top: 8px;
+    }
+}
   </style>
 </head>
 
