@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apresentação: Projeto de Controle de Tensão com AmpOps</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: {
+        ignoreHtmlClass: 'tex2jax_ignore',
+        processHtmlClass: 'tex2jax_process'
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    /* CONFIGURAÇÕES DE RESOLUÇÃO FIXA DE SLIDE (16:9 WIDESCREEN) */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #1a202c;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .slide-container {
+      width: 1280px;
+      height: 720px;
+      background-color: #ffffff;
+      color: #2d3748;
+      font-family: 'Open Sans', sans-serif;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      padding: 45px 55px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+    }
+
+    /* IDENTIDADE VISUAL */
+    .slide-container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 300px;
+      height: 300px;
+      background: linear-gradient(135deg, rgba(43, 108, 176, 0.06) 0%, rgba(43, 108, 176, 0) 100%);
+      border-radius: 0 0 0 100%;
+      z-index: 0;
+    }
+
+    .slide-container::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, #2b6cb0 0%, #319795 100%);
+    }
+
+    /* TIPOGRAFIA */
+    h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 48px;
+      font-weight: 700;
+      color: #1a365d;
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    h2.slide-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 30px;
+      font-weight: 700;
+      color: #2c5282;
+      margin: 0 0 15px 0;
+      border-left: 6px solid #2b6cb0;
+      padding-left: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: #2d3748;
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    p,
+    li {
+      font-size: 18px;
+      line-height: 1.5;
+      color: #4a5568;
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+
+    /* LAYOUTS */
+    .content-area {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      width: 100%;
+      align-items: center;
+    }
+
+    /* PLACEHOLDERS DE SIMULAÇÃO */
+    .sim-placeholder {
+      border: 2px dashed #cbd5e0;
+      background-color: #f7fafc;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 380px;
+      width: 100%;
+      color: #718096;
+      font-weight: 600;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .sim-placeholder i {
+      font-size: 40px;
+      margin-bottom: 10px;
+      color: #4299e1;
+    }
+
+    .sim-placeholder span {
+      font-size: 13px;
+      color: #a0aec0;
+      font-weight: 400;
+      margin-top: 5px;
+    }
+
+    /* TABELAS */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+
+    th {
+      background-color: #1a365d;
+      color: white;
+      padding: 10px 12px;
+      text-align: left;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #2d3748;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    /* BLOCOS DE EQUAÇÕES */
+    .math-block {
+      background: #f8fafc;
+      border-radius: 6px;
+      padding: 12px 20px;
+      margin: 8px 0;
+      border-left: 5px solid #3182ce;
+      color: #1a202c;
+    }
+
+    .step-badge {
+      background-color: #e2e8f0;
+      color: #2c5282;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+
+    /* DESTAQUES */
+    .highlight {
+      color: #2b6cb0;
+      font-weight: 600;
+    }
+
+    .danger {
+      color: #c53030;
+      font-weight: 600;
+    }
+
+    .success {
+      color: #2f855a;
+      font-weight: 600;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 15px;
+      left: 55px;
+      right: 55px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #a0aec0;
+      border-top: 1px solid #edf2f7;
+      padding-top: 5px;
+    }
+
+    .page-number {
+      font-weight: bold;
+      color: #2b6cb0;
+    }
+
+    /* Força a imagem a respeitar o limite do bloco sem estourar para os lados */
+    .sim-placeholder img {
+      max-width: 100%;
+      max-height: 240px;
+      /* Deixa espaço livre para o ícone e o texto b */
+      object-fit: contain;
+      /* Garante que a imagem mude de tamanho sem distorcer */
+      border-radius: 4px;
+      margin-top: 15px;
+      border: 1px solid #e2e8f0;
+      /* Cria uma borda fina elegante ao redor do print */
+    }
+
+    /* Garante que o container do span ocupe toda a largura interna disponível */
+    .sim-placeholder span {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+</head>
+
+<body class="tex2jax_process">
+
+  <div class="slide-container" id="slide1">
+    <div class="content-area center-content">
+      <span style="text-transform: uppercase; letter-spacing: 3px; color: #718096; font-weight: 600; font-size: 14px;">UFRN / CT / DEE</span>
+      <h1 style="margin-top: 10px; font-size: 50px;">Sistemas de Controle II</h1>
+      <p class="subtitle" style="font-size: 24px; color: #2b6cb0; font-weight: 600;">Projeto 3: Controle de Tensão de Saída com AmpOps</p>
+      <p style="font-size: 16px; margin: 5px 0;"><b>Abordagens:</b> Clássica Polinomial e Espaço de Estados</p>
+      <p style="font-size: 16px; margin: 5px 0;"><b>Professor: </b>Kurius Iuri Pineiro de Melo Queiroz</p>
+      <div style="margin-top: 50px; border-top: 2px solid #e2e8f0; padding-top: 20px; width: 50%;">
+        <br>
+        <p style="font-size: 16px; margin: 5px 0;"><b>Alunos:</b></p>
+        <ul style="list-style-type: none;">
+          <li>Leondas Leoncio Maia</li>
+          <li>Matteo Peixoto</li>
+          <li>Patrick Costa</li>
+          <li>Cecilia Medeiros</li>
+          <li>Maria Fernanda Abrantes</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer"><span>Projeto 3 - AmpOps</span><span class="page-number">Slide 1</span></div>
+  </div>
+
+  <div class="slide-container" id="slide2">
+    <h2 class="slide-title">1. Especificações de Desempenho</h2>
+    <div class="content-area">
+      <p>A atividade estabelece critérios estritos de resposta transitória para a regulação de tensão em malha fechada:</p>
+      <div class="two-column" style="margin-top: 15px;">
+        <div style="background: #f7fafc; padding: 20px; border-radius: 6px; border: 1px solid #e2e8f0;">
+          <h3>Restrições Temporais:</h3>
+          <ul>
+            <li>Regulação do valor final de saída: <span class="highlight">1V</span>.</li>
+            <li>Erro de regime permanente ($e_{ss}$): <span class="success">Zero</span> para entrada degrau.</li>
+            <li>Tempo de assentamento ($T_{s2\%}$): <span class="highlight">$\le 2,0 \text{ s}$</span>.</li>
+            <li>Sobressinal máximo ($PO\%$): <span class="danger">$\le 16,31\%$</span>.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Cenários Solicitados:</h3>
+          <ul>
+            <li><b>Cenário 1:</b> Realimentação de saída empregando método clássico de alocação polinomial.</li>
+            <li><b>Cenário 2:</b> Realimentação de estados utilizando representação matricial moderna.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>1. Introdução</span><span class="page-number">Slide 2</span></div>
+  </div>
+
+  <div class="slide-container" id="slide3">
+    <h2 class="slide-title">2. O Sistema a ser Controlado</h2>
+    <div class="content-area">
+      <div class="two-column">
+        <div style="text-align: center;">
+          <img src="assets/sistema.png" alt="Circuito Analógico AmpOp" style="max-width: 100%; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid #cbd5e0;">
+          <p style="font-size: 12px; color: #718096; margin-top: 5px;">Figura 1: Esquema do circuito eletrônico analógico ativo.</p>
+        </div>
+        <div>
+          <h3>Arquitetura por Estágios</h3>
+          <p>O circuito original distribui-se em dois subblocos dinâmicos baseados em amplificadores operacionais ideais:</p>
+          <ul>
+            <li><b>Estágio 1 ($G_1(s)$):</b> Integrador puro inversor.</li>
+            <li><b>Estágio 2 ($G_2(s)$):</b> Filtro ativo passa-baixas de primeira ordem.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>2. O Modelo Físico</span><span class="page-number">Slide 3</span></div>
+  </div>
+
+  <div class="slide-container" id="slide4">
+    <h2 class="slide-title">3. Modelagem do Estágio 1 (Integrador)</h2>
+    <div class="content-area">
+      <span class="step-badge">Análise de Correntes no Tempo</span>
+      <p>Considerando as premissas de curto-circuito virtual no AmpOp ideal, a corrente de entrada e a corrente da malha de feedback baseada em capacitor obedecem à Lei de Kirchhoff:</p>
+      <div class="math-block">
+        $$i_{in}(t) = \frac{v_{in}(t) - 0}{R_1} = \frac{v_{in}(t)}{R_1}$$
+      </div>
+      <div class="math-block">
+        $$i_f(t) = C_1 \frac{d(0 - v_{o1}(t))}{dt} = -C_1 \frac{dv_{o1}(t)}{dt}$$
+      </div>
+    </div>
+    <div class="footer"><span>3. Estágio 1</span><span class="page-number">Slide 4</span></div>
+  </div>
+
+  <div class="slide-container" id="slide5">
+    <h2 class="slide-title">3. Modelagem do Estágio 1 (Integrador)</h2>
+    <div class="content-area">
+      <span class="step-badge">Função de Transferência Teórica</span>
+      <p>Igualando as correntes do nó inversor virtual ($i_{in}(t) = i_f(t)$) e aplicando a transformada de Laplace sob condições iniciais nulas:</p>
+      <div class="math-block">
+        $$\frac{V_{in}(s)}{R_1} = -s C_1 V_{o1}(s)$$
+      </div>
+      <p>Isolando a relação de ganho dinâmico do primeiro bloco operacional:</p>
+      <div class="math-block">
+        $$G_1(s) = \frac{V_{o1}(s)}{V_{in}(s)} = -\frac{1}{s \cdot R_1 \cdot C_1}$$
+      </div>
+    </div>
+    <div class="footer"><span>3. Estágio 1</span><span class="page-number">Slide 5</span></div>
+  </div>
+
+  <div class="slide-container" id="slide6">
+    <h2 class="slide-title">3. Estágio 1: Componentes Numéricos</h2>
+    <div class="content-area">
+      <span class="step-badge">Substituição Paramétrica</span>
+      <p>Os valores nominais dos componentes para este estágio são dados por:</p>
+      <ul>
+        <li>$R_1 = 100 \text{ k}\Omega = 1 \times 10^5 \ \Omega$</li>
+        <li>$C_1 = 10 \ \mu\text{F} = 1 \times 10^{-5} \text{ F}$</li>
+      </ul>
+      <p>Calculando o termo do denominador:</p>
+      <div class="math-block">
+        $$R_1 \cdot C_1 = (1 \times 10^5) \times (1 \times 10^{-5}) = 1,0 \text{ segundo}$$
+      </div>
+      <div class="math-block">
+        $$G_1(s) = -\frac{1}{s \cdot 1,0} = -\frac{1}{s}$$
+      </div>
+    </div>
+    <div class="footer"><span>3. Estágio 1</span><span class="page-number">Slide 6</span></div>
+  </div>
+
+  <div class="slide-container" id="slide7">
+    <h2 class="slide-title">4. Modelagem do Estágio 2 (Filtro Passa-Baixas)</h2>
+    <div class="content-area">
+      <span class="step-badge">Análise do Nó de Feedback</span>
+      <p>O segundo estágio possui uma impedância em paralelo ($R_3 \parallel C_2$) em seu ramo inversor ativo. Analisando as correntes elétricas nodais:</p>
+      <div class="math-block">
+        $$i_1(s) = \frac{V_{o1}(s)}{R_2} \qquad i_f(s) = i_2(s) + i_3(s)$$
+      </div>
+      <p>Substituindo as expressões associadas ao ramo paralelo no domínio complexo:</p>
+      <div class="math-block">
+        $$i_f(s) = -V_{o2}(s) \cdot s C_2 + \frac{-V_{o2}(s)}{R_3} = -V_{o2}(s) \left[ s C_2 + \frac{1}{R_3} \right]$$
+      </div>
+    </div>
+    <div class="footer"><span>4. Estágio 2</span><span class="page-number">Slide 7</span></div>
+  </div>
+
+  <div class="slide-container" id="slide8">
+    <h2 class="slide-title">4. Modelagem do Estágio 2 (Filtro Passa-Baixas)</h2>
+    <div class="content-area">
+      <span class="step-badge">Dedução de $G_2(s)$</span>
+      <p>Igualando a corrente de entrada à corrente resultante do ramo de realimentação ($i_1(s) = i_f(s)$):</p>
+      <div class="math-block">
+        $$\frac{V_{o1}(s)}{R_2} = -\frac{V_{o2}(s) \cdot [s R_3 C_2 + 1]}{R_3}$$
+      </div>
+      <p>Isolando e organizando a função de transferência do filtro ativo:</p>
+      <div class="math-block">
+        $$G_2(s) = \frac{V_{o2}(s)}{V_{o1}(s)} = -\frac{R_3}{R_2 (s R_3 C_2 + 1)}$$
+      </div>
+    </div>
+    <div class="footer"><span>4. Estágio 2</span><span class="page-number">Slide 8</span></div>
+  </div>
+
+  <div class="slide-container" id="slide9">
+    <h2 class="slide-title">4. Estágio 2: Componentes Numéricos</h2>
+    <div class="content-area">
+      <span class="step-badge">Substituição Paramétrica</span>
+      <p>Os componentes passivos nominais mapeados para o segundo bloco compreendem:</p>
+      <ul>
+        <li>$R_2 = R_3 = 100 \text{ k}\Omega = 1 \times 10^5 \ \Omega$</li>
+        <li>$C_2 = 10 \ \mu\text{F} = 1 \times 10^{-5} \text{ F}$</li>
+      </ul>
+      <p>Efetuando as simplificações lineares de ganho e constante de tempo:</p>
+      <div class="math-block">
+        $$\frac{R_3}{R_2} = \frac{10^5}{10^5} = 1 \qquad R_3 \cdot C_2 = (1 \times 10^5) \times (1 \times 10^{-5}) = 1,0 \text{ s}$$
+      </div>
+      <div class="math-block">
+        $$G_2(s) = -\frac{1}{s \cdot 1,0 + 1} = -\frac{1}{s + 1}$$
+      </div>
+    </div>
+    <div class="footer"><span>4. Estágio 2</span><span class="page-number">Slide 9</span></div>
+  </div>
+
+  <div class="slide-container" id="slide10">
+    <h2 class="slide-title">5. Função de Transferência Global $G(s)$</h2>
+    <div class="content-area">
+      <span class="step-badge">Composição Linear em Cascata</span>
+      <p>Dado o isolamento elétrico por impedância ideal, a planta global constitui o produto linear de ambos os blocos calculados:</p>
+      <div class="math-block">
+        $$G(s) = G_1(s) \cdot G_2(s) = \left( -\frac{1}{s} \right) \times \left( -\frac{1}{s + 1} \right)$$
+      </div>
+      <p>O cancelamento algébrico dos sinais negativos fornece a dinâmica final de segunda ordem:</p>
+      <div class="math-block">
+        $$G(s) = \frac{1}{s(s + 1)} = \frac{1}{s^2 + s}$$
+      </div>
+    </div>
+    <div class="footer"><span>5. Planta Global</span><span class="page-number">Slide 10</span></div>
+  </div>
+
+  <div class="slide-container" id="slide11">
+    <h2 class="slide-title">5. Validação em Malha Aberta (Planta Livre)</h2>
+    <div class="content-area">
+      <div class="two-column">
+        <div class="sim-placeholder">
+          <i class="fa-solid fa-square-poll-vertical"></i>
+          <b>SIMULAÇÃO XCOS - PLANTA NATURAL G(s)</b>
+          <span><img src="assets/MA/XCOS_MA.png" alt=""></span>
+        </div>
+        <div class="sim-placeholder">
+          <i class="fa-solid fa-wave-square"></i>
+          <b>CIRCUITO NO FALSTAD - MALHA ABERTA</b>
+          <span><img src="assets/MA/circ_MA.png" alt=""></span>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>5. Malha Aberta</span><span class="page-number">Slide 11</span></div>
+  </div>
+
+  <div class="slide-container" id="slide11">
+    <h2 class="slide-title">5. Simulações em Malha Aberta (Planta Livre)</h2>
+    <div class="content-area">
+      <div class="two-column">
+        <div class="sim-placeholder">
+          <i class="fa-solid fa-square-poll-vertical"></i>
+          <b>SIMULAÇÃO XCOS - PLANTA NATURAL G(s)</b>
+          <span><img style="width: 50%;" src="assets/MA/Y(s).png" alt=""><img style="width: 50%;" src="assets/MA/U(s).png" alt=""></span>
+        </div>
+        <div class="sim-placeholder">
+          <i class="fa-solid fa-wave-square"></i>
+          <b>CIRCUITO NO FALSTAD - MALHA ABERTA</b>
+          <span>[Espaço para o print do circuito original ativo]</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>5. Malha Aberta</span><span class="page-number">Slide 12</span></div>
+  </div>
+
+  <div class="slide-container" id="slide12">
+    <h2 class="slide-title">6. Cálculo dos Parâmetros Dinâmicos: $\zeta$</h2>
+    <div class="content-area">
+      <span class="step-badge">Fator de Amortecimento Teórico</span>
+      <p>Para satisfazer o teto restritivo de sobressinal de $PO\% \le 16,31\%$ ($PO = 0,1631$):</p>
+      <div class="math-block">
+        $$\ln(0,1631) = -\frac{\zeta \pi}{\sqrt{1 - \zeta^2}} \implies -1,8134 = -\frac{\zeta \pi}{\sqrt{1 - \zeta^2}}$$
+      </div>
+      <p>Elevando ambos os lados ao quadrado para isolar o coeficiente:</p>
+      <div class="math-block">
+        $$3,2884 = \frac{\pi^2 \zeta^2}{1 - \zeta^2} \implies 3,2884(1 - \zeta^2) = 9,8696 \zeta^2$$
+      </div>
+      <div class="math-block">
+        $$3,2884 = 13,158 \zeta^2 \implies \zeta^2 \approx 0,25 \implies \zeta = 0,5$$
+      </div>
+    </div>
+    <div class="footer"><span>6. Parâmetros de Projeto</span><span class="page-number">Slide 12</span></div>
+  </div>
+
+  <div class="slide-container" id="slide13">
+    <h2 class="slide-title">6. Cálculo dos Parâmetros Dinâmicos: $\omega_n$</h2>
+    <div class="content-area">
+      <span class="step-badge">Frequência Natural Angular</span>
+      <p>A partir do teto para o tempo de assentamento no critério de acomodação de 2% ($T_{s2\%} \le 2\text{ s}$):</p>
+      <div class="math-block">
+        $$T_{s2\%} = \frac{4}{\zeta \cdot \omega_n} \le 2$$
+      </div>
+      <p>Substituindo o amortecimento $\zeta = 0,5$ previamente determinado:</p>
+      <div class="math-block">
+        $$\frac{4}{0,5 \cdot \omega_n} \le 2 \implies \frac{8}{\omega_n} \le 2 \implies \omega_n \ge 4 \text{ rad/s}$$
+      </div>
+      <p>Adota-se no limite exato da igualdade para conter o esforço de controle: <span class="highlight">$\omega_n = 4 \text{ rad/s}$</span>.</p>
+    </div>
+    <div class="footer"><span>6. Parâmetros de Projeto</span><span class="page-number">Slide 13</span></div>
+  </div>
+
+  <div class="slide-container" id="slide14">
+    <h2 class="slide-title">6. Polinômio Característico Alvo $A^*(s)$</h2>
+    <div class="content-area">
+      <span class="step-badge">Construção do Polinômio Desejado</span>
+      <p>Substituindo o par de parâmetros dinâmicos calculados ($\zeta=0,5$ e $\omega_n=4$) na forma padrão de segunda ordem:</p>
+      <div class="math-block">
+        $$A^*(s) = s^2 + 2\zeta\omega_n s + \omega_n^2$$
+      </div>
+      <div class="math-block">
+        $$A^*(s) = s^2 + 2(0,5)(4)s + (4)^2$$
+      </div>
+      <div class="math-block">
+        $$A^*(s) = s^2 + 4s + 16$$
+      </div>
+    </div>
+    <div class="footer"><span>6. Parâmetros de Projeto</span><span class="page-number">Slide 14</span></div>
+  </div>
+
+  <div class="slide-container" id="slide15">
+    <h2 class="slide-title">7. Cenário 1: Síntese Clássica Polinomial</h2>
+    <div class="content-area">
+      <span class="step-badge">Definição do Grau do Controlador</span>
+      <p>A planta possui polinômios coprimos definidos por: $A(s) = s^2 + s$ e $B(s) = 1$.</p>
+      <p>Para satisfazer os teoremas de grau da identidade Diofantina sem adicionar polos extras:</p>
+      <div class="math-block">
+        $$\text{Grau de } L(s) = n_l = 0 \implies L(s) = 1$$
+      </div>
+      <div class="math-block">
+        $$\text{Grau de } P(s) = n_p = 1 \implies P(s) = p_1 s + p_0$$
+      </div>
+    </div>
+    <div class="footer"><span>7. Cenário 1</span><span class="page-number">Slide 15</span></div>
+  </div>
+
+  <div class="slide-container" id="slide16">
+    <h2 class="slide-title">7. Cenário 1: Equação Diofantina</h2>
+    <div class="content-area">
+      <span class="step-badge">Substituição e Expansão Algébrica</span>
+      <p>Substituindo as estruturas lineares na igualdade característica fundamental do sistema:</p>
+      <div class="math-block">
+        $$A(s)L(s) + B(s)P(s) = A^*(s)$$
+      </div>
+      <div class="math-block">
+        $$(s^2 + s) \cdot (1) + (1) \cdot (p_1 s + p_0) = s^2 + 4s + 16$$
+      </div>
+      <div class="math-block">
+        $$s^2 + (1 + p_1)s + p_0 = s^2 + 4s + 16$$
+      </div>
+    </div>
+    <div class="footer"><span>7. Cenário 1</span><span class="page-number">Slide 16</span></div>
+  </div>
+
+  <div class="slide-container" id="slide17">
+    <h2 class="slide-title">7. Cenário 1: Resolução de $p_1$ e $p_0$</h2>
+    <div class="content-area">
+      <span class="step-badge">Casamento de Coeficientes por Potência</span>
+      <p>Igualando membro a membro os coeficientes do polinômio expandido para cada potência de $s$:</p>
+      <div class="math-block">
+        $$\text{Termos em } s^0: \quad p_0 = 16$$
+      </div>
+      <div class="math-block">
+        $$\text{Termos em } s^1: \quad 1 + p_1 = 4 \implies p_1 = 3$$
+      </div>
+      <p>A lei estrutural do controlador em malha fechada resulta em uma ação clássica PD:</p>
+      <div class="math-block">
+        $$C(s) = \frac{P(s)}{L(s)} = \frac{3s + 16}{1} = 3s + 16$$
+      </div>
+    </div>
+    <div class="footer"><span>7. Cenário 1</span><span class="page-number">Slide 17</span></div>
+  </div>
+
+  <div class="slide-container" id="slide18">
+    <h2 class="slide-title">7. Cenário 1: Dimensionamento do Hardware</h2>
+    <div class="content-area">
+      <span class="step-badge">Fórmulas do Controlador PD Físico</span>
+      <p>A topologia elétrica de um bloco PD ativo com AmpOp correlaciona os ganhos analíticos com resistores e capacitores reais:</p>
+      <div class="math-block">
+        $$\text{Ação Proporcional: } \frac{R_4 \cdot R_2}{R_3 \cdot R_a} = 16$$
+      </div>
+      <div class="math-block">
+        $$\text{Ação Derivativa: } \frac{R_4 \cdot R_2}{R_3} \cdot C_1 = 3$$
+      </div>
+      <p>Fixando por conveniência prática de mercado o capacitor padrão: $C_1 = 10 \ \mu\text{F}$.</p>
+    </div>
+    <div class="footer"><span>7. Cenário 1 - Hardware</span><span class="page-number">Slide 18</span></div>
+  </div>
+
+  <div class="slide-container" id="slide19">
+    <h2 class="slide-title">7. Cenário 1: Escolha dos Componentes</h2>
+    <div class="content-area">
+      <span class="step-badge">Cálculo dos Resistores Equivalentes</span>
+      <p>Isolando os termos com $C_1 = 10 \ \mu\text{F}$ alocado:</p>
+      <div class="math-block">
+        $$\frac{R_4 \cdot R_2}{R_3} = \frac{3}{10 \times 10^{-6}} = 300 \times 10^3$$
+      </div>
+      <p>Escolhendo para simulação valores comerciais simétricos e padronizados:</p>
+      <div class="math-block">
+        $$R_2 = R_4 = 100 \text{ k}\Omega \implies R_3 = 33,33 \text{ k}\Omega$$
+      </div>
+      <p>Para satisfazer o ganho proporcional de 16, calcula-se a malha de entrada $R_a = 18,75 \text{ k}\Omega$.</p>
+    </div>
+    <div class="footer"><span>7. Cenário 1 - Hardware</span><span class="page-number">Slide 19</span></div>
+  </div>
+
+  <div class="slide-container" id="slide20">
+    <h2 class="slide-title">7. Simulações do Cenário 1</h2>
+    <div class="content-area">
+      <div class="two-column">
+        <div class="sim-placeholder">
+          <i class="fa-solid fa-chart-line"></i>
+          <b>SIMULAÇÃO XCOS - CENÁRIO 1</b>
+          <span>[Espaço para colar o gráfico de resposta ao degrau com C(s) = 3s + 16]</span>
+        </div>
+        <div class="sim-placeholder">
+          <i class="fa-solid fa-wave-square"></i>
+          <b>CIRCUITO NO FALSTAD - REA. SAÍDA</b>
+          <span>[Espaço para colar o print do circuito PD ativo conectado]</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>7. Cenário 1 - Simulação</span><span class="page-number">Slide 20</span></div>
+  </div>
+
+  <div class="slide-container" id="slide21">
+    <h2 class="slide-title">8. Cenário 2: Espaço de Estados</h2>
+    <div class="content-area">
+      <span class="step-badge">Definição das Variáveis Físicas</span>
+      <p>A partir da equação diferencial do sistema linear de segunda ordem $\ddot{y} + \dot{y} = u$, definem-se as variáveis dinâmicas de estado de interesse:</p>
+      <div class="math-block">
+        $$x_1(t) = y(t) \quad \text{(Tensão de saída)}$$
+      </div>
+      <div class="math-block">
+        $$x_2(t) = \dot{y}(t) \quad \text{(Derivada temporal da saída)}$$
+      </div>
+      <p>Obtendo o conjunto de equações diferenciais acopladas de primeira ordem:</p>
+      <div class="math-block">
+        $$\dot{x}_1 = x_2 \qquad \dot{x}_2 = -\dot{y} + u = -x_2 + u$$
+      </div>
+    </div>
+    <div class="footer"><span>8. Cenário 2</span><span class="page-number">Slide 21</span></div>
+  </div>
+
+  <div class="slide-container" id="slide22">
+    <h2 class="slide-title">8. Cenário 2: Representação Canônica Matricial</h2>
+    <div class="content-area">
+      <span class="step-badge">Estrutura das Matrizes do Sistema</span>
+      <p>Organizando a dinâmica no formato canônico padrão de estados ($\dot{x} = Ax + Bu$ e $y = Cx$):</p>
+      <div class="math-block">
+        $$\begin{bmatrix} \dot{x}_1 \\ \dot{x}_2 \end{bmatrix} = \begin{bmatrix} 0 & 1 \\ 0 & -1 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix} + \begin{bmatrix} 0 \\ 1 \end{bmatrix} u$$
+      </div>
+      <p>A equação algébrica de leitura de saída assume o formato estrutural:</p>
+      <div class="math-block">
+        $$y = \begin{bmatrix} 1 & 0 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix}$$
+      </div>
+    </div>
+    <div class="footer"><span>8. Cenário 2</span><span class="page-number">Slide 22</span></div>
+  </div>
+
+  <div class="slide-container" id="slide23">
+    <h2 class="slide-title">8. Cenário 2: Teste de Controlabilidade</h2>
+    <div class="content-area">
+      <span class="step-badge">Matriz de Kalman</span>
+      <p>A matriz de controlabilidade $W_c$ é computada combinando os vetores da planta:</p>
+      <div class="math-block">
+        $$W_c = \begin{bmatrix} B & AB \end{bmatrix}$$
+      </div>
+      <p>Onde o produto interno matricial $AB$ resulta em:</p>
+      <div class="math-block">
+        $$AB = \begin{bmatrix} 0 & 1 \\ 0 & -1 \end{bmatrix} \begin{bmatrix} 0 \\ 1 \end{bmatrix} = \begin{bmatrix} 1 \\ -1 \end{bmatrix}$$
+      </div>
+      <div class="math-block">
+        $$W_c = \begin{bmatrix} 0 & 1 \\ 1 & -1 \end{bmatrix} \implies \det(W_c) = -1 \neq 0$$
+      </div>
+    </div>
+    <div class="footer"><span>8. Cenário 2</span><span class="page-number">Slide 23</span></div>
+  </div>
+
+  <div class="slide-container" id="slide24">
+    <h2 class="slide-title">9. Cenário 2 - Caso A: Amortecimento Crítico ($PO\% = 0\%$)</h2>
+    <div class="content-area">
+      <span class="step-badge">Polinômio Desejado Sem Oscilação</span>
+      <p>Para o primeiro subcaso de estados, elimina-se completamente o overshoot adotando um coeficiente de amortecimento unitário ($\zeta = 1$):</p>
+      <div class="math-block">
+        $$\zeta = 1,0 \qquad \omega_n = 4,0 \text{ rad/s}$$
+      </div>
+      <p>O polinômio característico desejado assume a forma de raiz real repetida:</p>
+      <div class="math-block">
+        $$A^*_A(s) = (s + 2)^2 = s^2 + 4s + 4$$
+      </div>
+      <p>Os dois polos de malha fechada serão alocados sobrepostos na coordenada real $s = -2,0$.</p>
+    </div>
+    <div class="footer"><span>9. Caso A (PO = 0%)</span><span class="page-number">Slide 24</span></div>
+  </div>
+
+  <div class="slide-container" id="slide25">
+    <h2 class="slide-title">9. Cenário 2 - Caso A: Matriz de Ackerman $\phi(A)$</h2>
+    <div class="content-area">
+      <span class="step-badge">Substituição Matricial</span>
+      <p>Aplica-se o teorema de Cayley-Hamilton mapeando a matriz $A$ sobre o polinômio desejado do Caso A:</p>
+      <div class="math-block">
+        $$\phi(A) = A^2 + 4A + 4I$$
+      </div>
+      <p>Desenvolvendo as potências e a soma direta das componentes lineares:</p>
+      <div class="math-block">
+        $$\phi(A) = \begin{bmatrix} 0 & 1 \\ 0 & -1 \end{bmatrix}^2 + 4\begin{bmatrix} 0 & 1 \\ 0 & -1 \end{bmatrix} + 4\begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}$$
+      </div>
+      <div class="math-block">
+        $$\phi(A) = \begin{bmatrix} 0 & -1 \\ 0 & 1 \end{bmatrix} + \begin{bmatrix} 0 & 4 \\ 0 & -4 \end{bmatrix} + \begin{bmatrix} 4 & 0 \\ 0 & 4 \end{bmatrix} = \begin{bmatrix} 4 & 3 \\ 0 & 1 \end{bmatrix}$$
+      </div>
+    </div>
+    <div class="footer"><span>9. Caso A (PO = 0%)</span><span class="page-number">Slide 25</span></div>
+  </div>
+
+  <div class="slide-container" id="slide26">
+    <h2 class="slide-title">9. Cenário 2 - Caso A: Vetor de Ganhos $K_A$</h2>
+    <div class="content-area">
+      <span class="step-badge">Fórmula de Alocação de Ackerman</span>
+      <p>O vetor de realimentação linear de estados $K_A = [k_1 \quad k_2]$ é obtido por:</p>
+      <div class="math-block">
+        $$K_A = \begin{bmatrix} 0 & 1 \end{bmatrix} W_c^{-1} \phi(A)$$
+      </div>
+      <p>Invertendo a matriz de controlabilidade de Kalman calculada anteriormente:</p>
+      <div class="math-block">
+        $$W_c^{-1} = \begin{bmatrix} 0 & 1 \\ 1 & -1 \end{bmatrix}^{-1} = \begin{bmatrix} 1 & 1 \\ 1 & 0 \end{bmatrix}$$
+      </div>
+      <div class="math-block">
+        $$K_A = \begin{bmatrix} 0 & 1 \end{bmatrix} \begin{bmatrix} 1 & 1 \\ 1 & 0 \end{bmatrix} \begin{bmatrix} 4 & 3 \\ 0 & 1 \end{bmatrix} = \begin{bmatrix} 1 & 0 \end{bmatrix} \begin{bmatrix} 4 & 3 \\ 0 & 1 \end{bmatrix} = \begin{bmatrix} 4 & 3 \end{bmatrix}$$
+      </div>
+    </div>
+    <div class="footer"><span>9. Caso A (PO = 0%)</span><span class="page-number">Slide 26</span></div>
+  </div>
+
+  <div class="slide-container" id="slide27">
+    <h2 class="slide-title">9. Cenário 2 - Caso A: Ganho de Pré-Alimentação $K_r$</h2>
+    <div class="content-area">
+      <span class="step-badge">Compensação Estática de Referência</span>
+      <p>Para assegurar erro nulo em regime permanente, calcula-se o ganho escalar de malha fechada $K_r$ para $s=0$:</p>
+      <div class="math-block">
+        $$K_r = \frac{-1}{C(A - BK)^{-1}B}$$
+      </div>
+      <p>Substituindo a matriz de malha fechada estável do Caso A:</p>
+      <div class="math-block">
+        $$A - BK = \begin{bmatrix} 0 & 1 \\ 0 & -1 \end{bmatrix} - \begin{bmatrix} 0 \\ 1 \end{bmatrix}\begin{bmatrix} 4 & 3 \end{bmatrix} = \begin{bmatrix} 0 & 1 \\ -4 & -4 \end{bmatrix}$$
+      </div>
+      <div class="math-block">
+        $$(A - BK)^{-1} = \begin{bmatrix} -1 & -0,25 \\ 1 & 0 \end{bmatrix} \implies K_r = \frac{-1}{\begin{bmatrix} 1 & 0 \end{bmatrix}\begin{bmatrix} -1 & -0,25 \\ 1 & 0 \end{bmatrix}\begin{bmatrix} 0 \\ 1 \end{bmatrix}} = 4$$
+      </div>
+    </div>
+    <div class="footer"><span>9. Caso A (PO = 0%)</span><span class="page-number">Slide 27</span></div>
+  </div>
+
+  <div class="slide-container" id="slide28">
+    <h2 class="slide-title">9. Simulações do Caso A ($PO\% = 0\%$)</h2>
+    <div class="content-area">
+      <div class="two-column">
+        <div class="sim-placeholder">
+          <i class="fa-solid fa-chart-line"></i>
+          <b>SIMULAÇÃO XCOS - CASO A</b>
+          <span>[Espaço para o degrau criticamente amortecido com K = [4 3]]</span>
+        </div>
+        <div class="sim-placeholder">
+          <i class="fa-solid fa-wave-square"></i>
+          <b>CIRCUITO NO FALSTAD - CASO A</b>
+          <span>[Espaço para a resposta temporal do circuito elétrico no Falstad]</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>9. Caso A - Simulação</span><span class="page-number">Slide 28</span></div>
+  </div>
+
+  <div class="slide-container" id="slide29">
+    <h2 class="slide-title">10. Cenário 2 - Caso B: Subamortecido ($PO\% = 16,31\%$)</h2>
+    <div class="content-area">
+      <span class="step-badge">Polinômio Desejado com Sobressinal</span>
+      <p>Alinhado com as especificações gerais temporais do circuito:</p>
+      <div class="math-block">
+        $$\zeta = 0,5 \qquad \omega_n = 4,0 \text{ rad/s}$$
+      </div>
+      <p>O polinômio dinâmico característico alvo para a alocação neste subcaso coincide com a forma deduzida clássica:</p>
+      <div class="math-block">
+        $$A^*_B(s) = s^2 + 4s + 16$$
+      </div>
+      <p>Os polos complexos conjugados de malha fechada localizam-se em: $s_{1,2} = -2 \pm j3,464$.</p>
+    </div>
+    <div class="footer"><span>10. Caso B (PO = 16.31%)</span><span class="page-number">Slide 29</span></div>
+  </div>
+
+  <div class="slide-container" id="slide30">
+    <h2 class="slide-title">10. Cenário 2 - Caso B: Matriz de Ackerman $\phi(A)$</h2>
+    <div class="content-area">
+      <span class="step-badge">Mapeamento Matricial</span>
+      <p>Avaliando a matriz dinâmica original da planta sobre a equação característica subamortecida do Caso B:</p>
+      <div class="math-block">
+        $$\phi(A) = A^2 + 4A + 16I$$
+      </div>
+      <p>Substituindo os operadores matriciais da planta:</p>
+      <div class="math-block">
+        $$\phi(A) = \begin{bmatrix} 0 & 1 \\ 0 & -1 \end{bmatrix}^2 + 4\begin{bmatrix} 0 & 1 \\ 0 & -1 \end{bmatrix} + 16\begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}$$
+      </div>
+      <div class="math-block">
+        $$\phi(A) = \begin{bmatrix} 0 & -1 \\ 0 & 1 \end{bmatrix} + \begin{bmatrix} 0 & 4 \\ 0 & -4 \end{bmatrix} + \begin{bmatrix} 16 & 0 \\ 0 & 16 \end{bmatrix} = \begin{bmatrix} 16 & 3 \\ 0 & 13 \end{bmatrix}$$
+      </div>
+    </div>
+    <div class="footer"><span>10. Caso B (PO = 16.31%)</span><span class="page-number">Slide 30</span></div>
+  </div>
+
+  <div class="slide-container" id="slide31">
+    <h2 class="slide-title">10. Cenário 2 - Caso B: Vetor de Ganhos $K_B$</h2>
+    <div class="content-area">
+      <span class="step-badge">Solução Algébrica dos Ganhos</span>
+      <p>Operando a alocação de estados pelo vetor seletor de Ackerman:</p>
+      <div class="math-block">
+        $$K_B = \begin{bmatrix} 0 & 1 \end{bmatrix} W_c^{-1} \phi(A)$$
+      </div>
+      <div class="math-block">
+        $$K_B = \begin{bmatrix} 0 & 1 \end{bmatrix} \begin{bmatrix} 1 & 1 \\ 1 & 0 \end{bmatrix} \begin{bmatrix} 16 & 3 \\ 0 & 13 \end{bmatrix}$$
+      </div>
+      <div class="math-block">
+        $$K_B = \begin{bmatrix} 1 & 0 \end{bmatrix} \begin{bmatrix} 16 & 3 \\ 0 & 13 \end{bmatrix} = \begin{bmatrix} 16 & 3 \end{bmatrix}$$
+      </div>
+    </div>
+    <div class="footer"><span>10. Caso B (PO = 16.31%)</span><span class="page-number">Slide 31</span></div>
+  </div>
+
+  <div class="slide-container" id="slide32">
+    <h2 class="slide-title">10. Cenário 2 - Caso B: Ganho de Pré-Alimentação $K_r$</h2>
+    <div class="content-area">
+      <span class="step-badge">Cálculo Estático de Escalonamento</span>
+      <p>Ajustando a pré-alimentação para assegurar rastreamento unitário em regime permanente para o vetor $K_B = [16 \quad 3]$:</p>
+      <div class="math-block">
+        $$K_r = \frac{-1}{C(A - BK)^{-1}B}$$
+      </div>
+      <p>Montando a correspondente dinâmica interna estável de malha fechada:</p>
+      <div class="math-block">
+        $$A - BK = \begin{bmatrix} 0 & 1 \\ 0 & -1 \end{bmatrix} - \begin{bmatrix} 0 \\ 1 \end{bmatrix}\begin{bmatrix} 16 & 3 \end{bmatrix} = \begin{bmatrix} 0 & 1 \\ -16 & -4 \end{bmatrix}$$
+      </div>
+      <div class="math-block">
+        $$(A - BK)^{-1} = \begin{bmatrix} -0,25 & -0,0625 \\ 1 & 0 \end{bmatrix} \implies K_r = \frac{-1}{-0,0625} = 16$$
+      </div>
+    </div>
+    <div class="footer"><span>10. Caso B (PO = 16.31%)</span><span class="page-number">Slide 32</span></div>
+  </div>
+
+  <div class="slide-container" id="slide33">
+    <h2 class="slide-title">10. Simulações do Caso B ($PO\% = 16,31\%$)</h2>
+    <div class="content-area">
+      <div class="two-column">
+        <div class="sim-placeholder">
+          <i class="fa-solid fa-chart-line"></i>
+          <b>SIMULAÇÃO XCOS - CASO B</b>
+          <span>[Espaço para o degrau subamortecido com K = [16 3]]</span>
+        </div>
+        <div class="sim-placeholder">
+          <i class="fa-solid fa-wave-square"></i>
+          <b>CIRCUITO NO FALSTAD - CASO B</b>
+          <span>[Espaço para o print do circuito oscilatório no Falstad]</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>10. Caso B - Simulação</span><span class="page-number">Slide 33</span></div>
+  </div>
+
+  <div class="slide-container" id="slide34">
+    <h2 class="slide-title">11. Síntese Comparativa de Resultados</h2>
+    <div class="content-area">
+      <p>Análise comparativa das três soluções de controle desenvolvidas:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Parâmetro de Projeto</th>
+            <th>Cenário 1 (Polinomial)</th>
+            <th>Cenário 2 (Caso A)</th>
+            <th>Cenário 2 (Caso B)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Ação / Ganhos</b></td>
+            <td>$C(s) = 3s + 16$</td>
+            <td>$K = [4 \quad 3]$</td>
+            <td>$K = [16 \quad 3]$</td>
+          </tr>
+          <tr>
+            <td><b>Pré-escalonador ($K_r$)</b></td>
+            <td>Não aplicável</td>
+            <td>$K_r = 4$</td>
+            <td>$K_r = 16$</td>
+          </tr>
+          <tr>
+            <td><b>Sobressinal ($PO\%$)</b></td>
+            <td>$\le 16,31\%$</td>
+            <td>$0\%$ (Crítico)</td>
+            <td>$16,31\%$</td>
+          </tr>
+          <tr>
+            <td><b>Acomodação ($T_{s2\%}$)</b></td>
+            <td>$\le 2,0 \text{ s}$</td>
+            <td>$\le 2,0 \text{ s}$</td>
+            <td>$\le 2,0 \text{ s}$</td>
+          </tr>
+          <tr>
+            <td><b>Erro de Regime ($e_{ss}$)</b></td>
+            <td>Zero</td>
+            <td>Zero</td>
+            <td>Zero</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="footer"><span>11. Comparativo</span><span class="page-number">Slide 34</span></div>
+  </div>
+
+  <div class="slide-container" id="slide35">
+    <h2 class="slide-title">12. Aspectos Práticos de Engenharia</h2>
+    <div class="content-area">
+      <p>Considerações ao migrar as equações exatas para hardware real com AmpOps:</p>
+      <div class="two-column">
+        <div style="background: #fff5f5; padding: 15px; border-radius: 6px; border: 1px solid #fed7d7;">
+          <h3>Saturação Elétrica:</h3>
+          <p style="font-size: 16px;">Os integradores estão limitados à alimentação de $\pm 10\text{V}$. Ganhos de malha elevados (como $k_1 = 16$) aplicados a degraus abruptos podem impor saturação temporária nos operacionais práticos.</p>
+        </div>
+        <div style="background: #f0fff4; padding: 15px; border-radius: 6px; border: 1px solid #c6f6d5;">
+          <h3>Vantagem dos Estados:</h3>
+          <p style="font-size: 16px;">A ação derivativa clássica ($3s$) exige um bloco diferenciador que amplifica ruídos de alta frequência. No espaço de estados, o termo equivalente $x_2$ é extraído diretamente do nó intermediário do circuito, sem necessidade de derivação analógica ativa.</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>12. Engenharia Prática</span><span class="page-number">Slide 35</span></div>
+  </div>
+
+  <div class="slide-container" id="slide36">
+    <h2 class="slide-title">13. Conclusão</h2>
+    <div class="content-area center-content">
+      <i class="fa-solid fa-circle-check" style="font-size: 50px; color: #38a169; margin-bottom: 15px;"></i>
+      <h2 style="font-size: 32px; color: #1a365d; margin: 0;">Metas Alcançadas</h2>
+      <p style="max-width: 800px; margin: 15px auto; font-size: 19px;">
+        A divisão analítica por estágios isolou corretamente a planta global do circuito. Tanto o método clássico polinomial quanto a técnica moderna de alocação por estados provaram equivalência matemática exata no cumprimento dos requisitos de resposta temporal transiente e erro nulo.
+      </p>
+    </div>
+    <div class="footer"><span>13. Conclusão</span><span class="page-number">Slide 36</span></div>
+  </div>
+
+</body>
+
+</html>
