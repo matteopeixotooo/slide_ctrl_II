@@ -27,7 +27,9 @@
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
   <style>
-    /* CONFIGURAÇÕES DE RESOLUÇÃO FIXA DE SLIDE (16:9 WIDESCREEN) */
+    /* ==================================================================
+       1. CONFIGURAÇÕES GERAIS E LAYOUT PADRÃO (DESKTOP BASE)
+       ================================================================== */
     * {
       box-sizing: border-box;
     }
@@ -40,6 +42,7 @@
       flex-direction: column;
       gap: 40px;
       align-items: center;
+      min-height: 100vh;
     }
 
     .slide-container {
@@ -55,9 +58,10 @@
       padding: 45px 55px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
       border-radius: 8px;
+      flex-shrink: 0; /* Impede que o slide amasse no flexbox */
     }
 
-    /* IDENTIDADE VISUAL */
+    /* IDENTIDADE VISUAL DE FUNDO */
     .slide-container::before {
       content: "";
       position: absolute;
@@ -80,7 +84,9 @@
       background: linear-gradient(90deg, #2b6cb0 0%, #319795 100%);
     }
 
-    /* TIPOGRAFIA */
+    /* ==================================================================
+       2. TIPOGRAFIA E ELEMENTOS GRÁFICOS
+       ================================================================== */
     h1 {
       font-family: 'Montserrat', sans-serif;
       font-size: 48px;
@@ -111,8 +117,7 @@
       margin-bottom: 10px;
     }
 
-    p,
-    li {
+    p, li {
       font-size: 18px;
       line-height: 1.5;
       color: #4a5568;
@@ -120,7 +125,6 @@
       margin-bottom: 5px;
     }
 
-    /* LAYOUTS */
     .content-area {
       flex-grow: 1;
       display: flex;
@@ -139,7 +143,7 @@
       align-items: center;
     }
 
-    /* PLACEHOLDERS DE SIMULAÇÃO */
+    /* PLACEHOLDERS DE SIMULAÇÃO (CAIXAS PONTILHADAS) */
     .sim-placeholder {
       border: 2px dashed #cbd5e0;
       background-color: #f7fafc;
@@ -163,13 +167,21 @@
     }
 
     .sim-placeholder span {
-      font-size: 13px;
-      color: #a0aec0;
-      font-weight: 400;
-      margin-top: 5px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
     }
 
-    /* TABELAS */
+    .sim-placeholder img {
+      max-width: 100%;
+      max-height: 240px;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+
+    /* TABELAS E BLOCOS MATEMÁTICOS */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -195,7 +207,6 @@
       background-color: #f8fafc;
     }
 
-    /* BLOCOS DE EQUAÇÕES */
     .math-block {
       background: #f8fafc;
       border-radius: 6px;
@@ -217,22 +228,6 @@
       margin-bottom: 8px;
     }
 
-    /* DESTAQUES */
-    .highlight {
-      color: #2b6cb0;
-      font-weight: 600;
-    }
-
-    .danger {
-      color: #c53030;
-      font-weight: 600;
-    }
-
-    .success {
-      color: #2f855a;
-      font-weight: 600;
-    }
-
     .footer {
       position: absolute;
       bottom: 15px;
@@ -251,29 +246,8 @@
       color: #2b6cb0;
     }
 
-    /* Força a imagem a respeitar o limite do bloco sem estourar para os lados */
-    .sim-placeholder img {
-      max-width: 100%;
-      max-height: 240px;
-      /* Deixa espaço livre para o ícone e o texto b */
-      object-fit: contain;
-      /* Garante que a imagem mude de tamanho sem distorcer */
-      border-radius: 4px;
-      margin-top: 15px;
-      border: 1px solid #e2e8f0;
-      /* Cria uma borda fina elegante ao redor do print */
-    }
-
-    /* Garante que o container do span ocupe toda a largura interna disponível */
-    .sim-placeholder span {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
     /* ==================================================================
-       EFEITO GRAPHIC WATERMARK PARA A CAPA (SLIDE 1)
+       3. WATERMARK EXCLUSIVA DA CAPA (SLIDE 1)
        ================================================================== */
     #slide1 .technical-watermark {
       position: absolute;
@@ -314,44 +288,29 @@
       background-color: rgba(43, 108, 176, 0.04);
     }
 
-    #slide1 .axis-line.horizontal {
-      width: 120%;
-      height: 1.5px;
-    }
-
-    #slide1 .axis-line.vertical {
-      width: 1.5px;
-      height: 120%;
-    }
+    #slide1 .axis-line.horizontal { width: 120%; height: 1.5px; }
+    #slide1 .axis-line.vertical { width: 1.5px; height: 120%; }
 
     #slide1 .watermark-icon {
       font-size: 100px;
       color: rgba(43, 108, 176, 0.06);
       z-index: 1;
       animation: spinSlow 40s linear infinite;
-      /* Rotação suave de fundo */
     }
 
     @keyframes spinSlow {
-      from {
-        transform: rotate(0deg);
-      }
-
-      to {
-        transform: rotate(360deg);
-      }
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
     /* ==================================================================
-       CONFIGURAÇÃO PARA IMPRESSÃO PERFEITA EM A4 PAISAGEM (CTRL + P)
+       4. CONFIGURAÇÃO DE IMPRESSÃO EM PDF/A4 (CTRL + P)
        ================================================================== */
     @media print {
       @page {
         size: A4 landscape;
         margin: 0;
-        /* Remove os cabeçalhos e rodapés nativos do navegador (data, título, URL) */
       }
-
       body {
         background-color: #ffffff !important;
         padding: 0 !important;
@@ -359,7 +318,6 @@
         gap: 0 !important;
         display: block !important;
       }
-
       .slide-container {
         width: 297mm !important;
         height: 210mm !important;
@@ -368,93 +326,25 @@
         page-break-after: always !important;
         break-after: page !important;
         page-break-inside: avoid !important;
-
-        /* Força o navegador a manter os fundos coloridos, matrizes d'água e gradientes acesos */
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
-
-      /* Ajuste preventivo para que as caixas de simulação duplas caibam perfeitamente na folha */
-      .sim-placeholder {
-        height: 330px !important;
-      }
-
-      .sim-placeholder img {
-        max-height: 190px !important;
-      }
+      .sim-placeholder { height: 330px !important; }
+      .sim-placeholder img { max-height: 190px !important; }
     }
-
-    /* CONFIGURAÇÕES DE RESOLUÇÃO FIXA DE SLIDE (16:9 WIDESCREEN) */
-    * { box-sizing: border-box; }
-
-    body {
-      background-color: #1a202c;
-      margin: 0;
-      padding: 40px 0;
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      align-items: center;
-      min-height: 100vh;
-    }
-
-    .slide-container {
-      width: 1280px;
-      height: 720px;
-      background-color: #ffffff;
-      color: #2d3748;
-      font-family: 'Open Sans', sans-serif;
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      padding: 45px 55px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-      border-radius: 8px;
-      flex-shrink: 0; /* Impede que o slide amasse */
-    }
-
-    /* ... (Mantenha aqui as suas outras regras: h1, h2, math-block, sim-placeholder, etc.) ... */
-
-    h1 { font-family: 'Montserrat', sans-serif; font-size: 48px; font-weight: 700; color: #1a365d; margin: 0; line-height: 1.2; }
-    h2.slide-title { font-family: 'Montserrat', sans-serif; font-size: 30px; font-weight: 700; color: #2c5282; margin: 0 0 15px 0; border-left: 6px solid #2b6cb0; padding-left: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
-    h3 { font-family: 'Montserrat', sans-serif; font-size: 22px; font-weight: 600; color: #2d3748; margin-top: 0; margin-bottom: 10px; }
-    p, li { font-size: 18px; line-height: 1.5; color: #4a5568; margin-top: 5px; margin-bottom: 5px; }
-    .content-area { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; width: 100%; position: relative; z-index: 1; }
-    .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; width: 100%; align-items: center; }
-    .sim-placeholder { border: 2px dashed #cbd5e0; background-color: #f7fafc; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 380px; width: 100%; color: #718096; font-weight: 600; text-align: center; padding: 20px; }
-    .sim-placeholder i { font-size: 40px; margin-bottom: 10px; color: #4299e1; }
-    .sim-placeholder span { width: 100%; display: flex; justify-content: center; align-items: center; gap: 10px; }
-    .sim-placeholder img { max-width: 100%; max-height: 240px; object-fit: contain; border-radius: 4px; border: 1px solid #e2e8f0; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 16px; }
-    th { background-color: #1a365d; color: white; padding: 10px 12px; text-align: left; font-family: 'Montserrat', sans-serif; }
-    td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; color: #2d3748; }
-    tr:nth-child(even) { background-color: #f8fafc; }
-    .math-block { background: #f8fafc; border-radius: 6px; padding: 12px 20px; margin: 8px 0; border-left: 5px solid #3182ce; color: #1a202c; }
-    .step-badge { background-color: #e2e8f0; color: #2c5282; padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 700; text-transform: uppercase; display: inline-block; margin-bottom: 8px; }
-    .highlight { color: #2b6cb0; font-weight: 600; }
-    .danger { color: #c53030; font-weight: 600; }
-    .success { color: #2f855a; font-weight: 600; }
-    .footer { position: absolute; bottom: 15px; left: 55px; right: 55px; display: flex; justify-content: space-between; font-size: 12px; color: #a0aec0; border-top: 1px solid #edf2f7; padding-top: 5px; }
-    .page-number { font-weight: bold; color: #2b6cb0; }
 
     /* ==================================================================
-       FORÇAR FORMATO DE SLIDE EM TODOS OS DISPOSITIVOS (MÉTODO ZOOM)
+       5. MARKETING MÓVEL: ESCALONAMENTO EM FORMATO DE SLIDE FIXO (ZOOM)
        ================================================================== */
-    @media (max-width: 1280px) {
+    @media (max-width: 1300px) {
       body {
         padding: 20px 0;
-        /* Impede o scroll horizontal indesejado */
-        overflow-x: hidden; 
+        gap: 20px;
       }
 
       .slide-container {
-        /* Reduz o slide proporcionalmente para caber na largura da tela do celular */
-        transform: scale(calc(100vw / 1320)); 
-        transform-origin: top center;
-        
-        /* Corrige o espaçamento vertical após o scale */
-        margin-bottom: calc((720px * (100vw / 1320)) - 720px + 20px);
+        /* Reduz o bloco e recalcula seu espaço proporcional na tela do celular */
+        zoom: calc(100vw / 1340); 
       }
     }
   </style>
