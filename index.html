@@ -333,34 +333,119 @@
       .sim-placeholder img { max-height: 190px !important; }
     }
     
-    @media (max-width: 1280px) {
-      html, body {
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow-x: hidden !important; /* Mata qualquer rolagem para os lados no celular */
-      }
-      
-      body {
-        padding: 20px 0 !important;
-        gap: 0 !important; /* Evita espaçamentos fantasmas entre os blocos */
-      }
+    /* =========================================================
+   RESPONSIVIDADE REAL PARA CELULARES
+   ========================================================= */
+@media (max-width: 900px) {
 
-      .slide-container {
-        /* Encolhe o slide de 1280px mantendo o formato exato de PC no celular */
-        transform: scale(calc(100vw / 1280)) !important;
-        transform-origin: top center !important;
-        
-        /* Reseta as margens e elimina os buracos brancos verticais gerados pelo encolhimento */
-        margin-top: 0 !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-        margin-bottom: calc((720px * (100vw / 1280)) - 720px + 25px) !important;
-        
-        /* Remove o efeito borrado de redimensionamento em telas de alta densidade (Retina/OLED) */
-        backface-visibility: hidden;
-        -webkit-backface-visibility: hidden;
-      }
-    }
+  body {
+    padding: 12px;
+    gap: 20px;
+    background: #1a202c;
+  }
+
+  .slide-container {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    min-height: auto;
+
+    padding: 24px 20px 50px 20px;
+
+    border-radius: 0;
+    box-shadow: none;
+
+    overflow: hidden;
+  }
+
+  .content-area {
+    width: 100%;
+  }
+
+  .two-column {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  h1 {
+    font-size: 34px !important;
+    line-height: 1.2;
+  }
+
+  h2.slide-title {
+    font-size: 22px;
+    padding-left: 10px;
+    margin-bottom: 12px;
+  }
+
+  h3 {
+    font-size: 18px;
+  }
+
+  p,
+  li,
+  td,
+  th {
+    font-size: 15px;
+    line-height: 1.45;
+  }
+
+  .math-block {
+    padding: 10px 14px;
+    overflow-x: auto;
+  }
+
+  .sim-placeholder {
+    height: auto;
+    min-height: 220px;
+    padding: 14px;
+  }
+
+  .sim-placeholder img {
+    max-width: 100%;
+    height: auto !important;
+    max-height: none;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .footer {
+    left: 20px;
+    right: 20px;
+    bottom: 10px;
+    font-size: 10px;
+  }
+
+  /* Ajuste da capa */
+  #slide1 .technical-watermark {
+    width: 220px;
+    height: 220px;
+    right: -60px;
+    opacity: 0.4;
+  }
+
+  #slide1 .watermark-icon {
+    font-size: 48px;
+  }
+
+  #slide1 .content-area {
+    padding-left: 0 !important;
+  }
+
+  #slide1 h1 {
+    max-width: 100%;
+  }
+
+  /* Remove elementos gigantes no mobile */
+  .slide-container::before {
+    width: 160px;
+    height: 160px;
+  }
+}
   </style>
 </head>
 
