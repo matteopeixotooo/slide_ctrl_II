@@ -332,21 +332,36 @@
       .sim-placeholder { height: 330px !important; }
       .sim-placeholder img { max-height: 190px !important; }
     }
-
-    /* ==================================================================
-       5. MARKETING MÓVEL: ESCALONAMENTO EM FORMATO DE SLIDE FIXO (ZOOM)
-       ================================================================== */
-    @media (max-width: 1300px) {
+    
+    @media (max-width: 1280px) {
+      html, body {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important; /* Mata qualquer rolagem para os lados no celular */
+      }
+      
       body {
-        padding: 20px 0;
-        gap: 20px;
+        padding: 20px 0 !important;
+        gap: 0 !important; /* Evita espaçamentos fantasmas entre os blocos */
       }
 
       .slide-container {
-        /* Reduz o bloco e recalcula seu espaço proporcional na tela do celular */
-        zoom: calc(100vw / 1340); 
+        /* Encolhe o slide de 1280px mantendo o formato exato de PC no celular */
+        transform: scale(calc(100vw / 1280)) !important;
+        transform-origin: top center !important;
+        
+        /* Reseta as margens e elimina os buracos brancos verticais gerados pelo encolhimento */
+        margin-top: 0 !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        margin-bottom: calc((720px * (100vw / 1280)) - 720px + 25px) !important;
+        
+        /* Remove o efeito borrado de redimensionamento em telas de alta densidade (Retina/OLED) */
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
       }
     }
+  </style>
   </style>
 </head>
 
